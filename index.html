@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klaim Garansi Ulang Tahun</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #1a1a2e;
+    --surface: #16213e;
+    --primary: #e94560; /* Merah ladybug lucu */
+    --accent: #f5c518; /* Kuning komik */
+    --text: #f2f2f2;
+    --muted: #a2a2a2;
+    --dark: #0f0f1a;
+  }
+  
+  * { box-sizing: border-box; }
+  
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+  }
+  
+  .font-mono { font-family: 'Space Mono', monospace; }
+  
+  /* Halftone pattern background */
+  .bg-halftone {
+    background-image: radial-gradient(rgba(233, 69, 96, 0.15) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  /* Glow effects */
+  .glow-text {
+    text-shadow: 0 0 10px rgba(233, 69, 96, 0.8), 0 0 20px rgba(233, 69, 96, 0.4);
+  }
+  
+  .glow-box {
+    box-shadow: 0 0 0 2px var(--dark), 0 0 0 4px var(--primary), 0 0 30px rgba(233, 69, 96, 0.4);
+  }
+  
+  /* Brutalist card */
+  .card-brutal {
+    background: var(--surface);
+    border: 3px solid var(--dark);
+    box-shadow: 8px 8px 0px var(--primary);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .card-brutal:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 12px 12px 0px var(--primary);
+  }
+  
+  .card-yellow {
+    box-shadow: 8px 8px 0px var(--accent);
+  }
+  .card-yellow:hover {
+    box-shadow: 12px 12px 0px var(--accent);
+  }
+  
+  /* Button */
+  .btn-brutal {
+    background: var(--primary);
+    color: var(--text);
+    border: 3px solid var(--dark);
+    box-shadow: 5px 5px 0px var(--dark);
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: all 0.1s;
+    cursor: pointer;
+  }
+  
+  .btn-brutal:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 3px 3px 0px var(--dark);
+  }
+  
+  .btn-brutal:active {
+    transform: translate(5px, 5px);
+    box-shadow: 0px 0px 0px var(--dark);
+  }
+  
+  .btn-accent {
+    background: var(--accent);
+    color: var(--dark);
+  }
+  
+  /* Animasi getar (untuk interaksi lucu) */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+  }
+  .shake { animation: shake 0.5s; }
+  
+  @keyframes wobble {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-3deg); }
+    75% { transform: rotate(3deg); }
+  }
+  .wobble { animation: wobble 0.4s infinite; }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+  .float { animation: float 3s ease-in-out infinite; }
+  
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  .blink { animation: blink 1s infinite; }
+  
+  /* Garansi Paper */
+  .garansi-paper {
+    background: #f4f1de;
+    color: #1a1a2e;
+    position: relative;
+    transform: rotate(-1deg);
+  }
+  
+  .garansi-paper::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(transparent, transparent 31px, rgba(233, 69, 96, 0.2) 31px, rgba(233, 69, 96, 0.2) 32px);
+    pointer-events: none;
+  }
+  
+  /* Koyak */
+  .tear-line {
+    border-bottom: 2px dashed var(--muted);
+    position: relative;
+  }
+  
+  /* Scanner line */
+  .scanner {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary);
+    animation: scan 2s linear infinite;
+  }
+  @keyframes scan {
+    0% { top: 0; }
+    100% { top: 100%; }
+  }
+  
+  /* Speech bubble */
+  .speech-bubble {
+    position: relative;
+    background: var(--surface);
+    border: 2px solid var(--dark);
+    border-radius: 10px;
+  }
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 30px;
+    border-width: 10px 10px 0 0;
+    border-style: solid;
+    border-color: var(--dark) transparent;
+  }
+  .speech-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 32px;
+    border-width: 8px 8px 0 0;
+    border-style: solid;
+    border-color: var(--surface) transparent;
+  }
+  
+  /* Slide in */
+  .slide-in {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .slide-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Custom Scroll */
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--primary); border: 2px solid var(--bg); }
+</style>
+</head>
+<body class="bg-halftone">
+
+<!-- Navbar Konyol -->
+<nav class="sticky top-0 z-50 bg-[var(--surface)] border-b-4 border-[var(--primary)] py-3">
+  <div class="container mx-auto px-6 flex justify-between items-center">
+    <div class="flex items-center gap-2">
+      <i class="fas fa-bug text-[var(--primary)] text-xl wobble"></i>
+      <span class="font-mono font-bold text-sm md:text-base">ALENNN.id</span>
+    </div>
+    <div class="font-mono text-xs md:text-sm text-[var(--muted)]">
+      Status: <span class="text-[var(--accent)] blink">SISTEM AKTIF</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO SECTION: Surat Somasi -->
+<section class="min-h-screen flex items-center justify-center px-6 py-20">
+  <div class="max-w-4xl w-full text-center">
+    <div class="inline-block mb-8 px-4 py-2 border-2 border-[var(--accent)] text-[var(--accent)] font-mono text-xs md:text-sm tracking-widest mb-">
+      [ PEMBERITAHUAN RESMI #007 ]
+    </div>
+    
+    <h1 class="text-5xl md:text-8xl font-black uppercase leading-none mb-6 tracking-tighter">
+      HAI <span class="text-[var(--primary)] glow-text">KAMU</span>,<br>
+      JANGAN <span class="underline decoration-wavy decoration-[var(--accent)]">KABUR</span> DULU!
+    </h1>
+    
+    <p class="font-mono text-sm md:text-lg text-[var(--muted)] mb-10 max-w-2xl mx-auto leading-relaxed">
+      Yah... jangan kabur. Walaupun hari ini umurmu nambah dan dosamu juga nambah, 
+      aku tetap mau sampaikan sesuatu. Aku udah siapin data-datamu nih.
+    </p>
+    
+    <!-- ID Card Parodi -->
+    <div class="card-brutal p-6 max-w-md mx-auto mb-10 text-left">
+      <div class="flex justify-between items-center mb-4 border-b-2 border-dashed border-[var(--muted)] pb-2">
+        <span class="font-mono text-xs text-[var(--muted)]">PROFIL SUBJEK</span>
+        <i class="fas fa-fingerprint text-[var(--primary)] text-xl"></i>
+      </div>
+      <div class="space-y-2 font-mono text-sm">
+        <div class="flex justify-between"><span class="text-[var(--muted)]">Nama:</span> <span class="font-bold">[RAHASIA DONG]</span></div>
+        <div class="flex justify-between"><span class="text-[var(--muted)]">Umur Baru:</span> <span class="font-bold text-[var(--primary)]">+1 Tahun</span></div>
+        <div class="flex justify-between"><span class="text-[var(--muted)]">Status:</span> <span class="font-bold text-[var(--accent)]">Lagi Ultah</span></div>
+        <div class="flex justify-between"><span class="text-[var(--muted)]">Sifat:</span> <span class="font-bold">Nyebelin, tukang marah</span></div>
+      </div>
+    </div>
+
+    <button onclick="scrollToSection('rules')" class="btn-brutal btn-accent px-8 py-4 text-lg">
+      LANJUT KE PROSES <i class="fas fa-arrow-down ml-2"></i>
+    </button>
+  </div>
+</section>
+
+<!-- SECTION 2: TOS & ATURAN MAIN -->
+<section id="rules" class="min-h-screen flex items-center justify-center px-6 py-20">
+  <div class="max-w-3xl w-full">
+    <div class="text-center mb-10 slide-in">
+      <h2 class="text-3xl md:text-5xl font-black uppercase mb-2">Sebentar...</h2>
+      <p class="font-mono text-[var(--muted)]">Baca dulu Aturan Mainnya (SCROLL KE BAWAH UNTUK SETUJU)</p>
+    </div>
+
+    <div class="card-brutal card-yellow p-8 slide-in">
+      <h3 class="font-black text-2xl uppercase mb-6 flex items-center gap-2">
+        <i class="fas fa-gavel"></i> SYARAT & KETENTUAN HARI INI
+      </h3>
+      <ul class="space-y-4 font-mono text-sm md:text-base">
+        <li class="flex gap-3">
+          <span class="text-[var(--primary)] font-bold">1.</span>
+          <span>Kamu harus senyum sekarang. Iya, sekarang. Sebelum scroll lanjut.</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-[var(--primary)] font-bold">2.</span>
+          <span>Segala klaim "capek" atau "sepuh" hari ini ditolak terang-terangan. Tapi kalau leher keriting, boleh aku bantu pijet.</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-[var(--primary)] font-bold">3.</span>
+          <span>Tidak boleh nangis karena merasa bersyukur. Kecuali nangis karena laper. Nangis laper boleh.</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-[var(--primary)] font-bold">4.</span>
+          <span>Segala sesuatu yang kamu minta hari ini... mungkin tidak dikabulkan, tapi paling tidak aku kasih senyuman.</span>
+        </li>
+      </ul>
+      
+      <div class="mt-8 pt-6 border-t-2 border-dashed border-[var(--dark)]/30">
+        <button id="agreeBtn" class="btn-brutal w-full py-4 text-lg">
+          <i class="fas fa-check-circle mr-2"></i> AKU SETUJU & UDAH SENYUM
+        </button>
+        <p id="agreeStatus" class="text-center mt-3 font-mono text-xs text-[var(--muted)]">
+          * Tombol sengaja dibikin ribet ngetiknya.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: KARTU GARANSI (CLIMAX) -->
+<section id="garansi" class="min-h-screen flex items-center justify-center px-6 py-20 hidden">
+  <div class="max-w-2xl w-full text-center">
+    <div class="speech-bubble inline-block px-6 py-4 mb-12 float">
+      <p class="font-mono text-sm md:text-base text-left">
+        "Halo... iya kamu. Selamat datang di proses klaim garansi umur. 
+        Silakan masukkan nama lengkapmu untuk verifikasi data."
+      </p>
+    </div>
+    <div class="w-20 h-20 bg-[var(--primary)] rounded-full mx-auto mb-12 flex items-center justify-center text-3xl float">
+      <i class="fas fa-robot text-white"></i>
+    </div>
+
+    <div class="card-brutal p-8 glow-box relative overflow-hidden">
+      <div class="scanner"></div>
+      <h3 class="font-black text-3xl uppercase mb-2 tracking-wider">MESIN KLAIM GARANSI</h3>
+      <p class="font-mono text-xs text-[var(--muted)] mb-6">VERSI 2.0 — DILINDUNGI UNDANG-UNDANG ATURAN SOSIAL</p>
+      
+      <div class="mb-6">
+        <label class="font-mono text-sm block mb-2 text-left">Masukkan Nama Klaiman:</label>
+        <input type="text" id="namaInput" placeholder="Ketik namamu di sini..." class="w-full px-4 py-3 bg-[var(--dark)] border-2 border-[var(--muted)] focus:border-[var(--accent)] focus:outline-none font-mono text-white">
+      </div>
+
+      <button id="submitGaransi" class="btn-brutal w-full py-4 text-lg">
+        <i class="fas fa-paper-plane mr-2"></i> KLAIM SEKARANG!
+      </button>
+
+      <!-- Hasil Klaim -->
+      <div id="hasilKlaim" class="mt-8 hidden">
+        <div class="garansi-paper p-6 text-left shadow-2xl">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <p class="font-mono text-[10px] text-gray-600">NO. DOK: 08239921/TEBAT/XI/2024</p>
+              <h4 class="font-black text-2xl uppercase">Kartu Garansi Tidak Resmi</h4>
+            </div>
+            <div class="text-4xl text-red-600/50">
+              <i class="fas fa-stamp"></i>
+            </div>
+          </div>
+          
+          <p class="text-sm mb-2">Dengan ini menyatakan bahwa:</p>
+          <p id="namaOutput" class="font-black text-xl mb-4 underline decoration-2 underline-offset-4 decoration-red-500"></p>
+          
+          <p class="text-sm mb-4 leading-relaxed">
+            Resmi berumur <span class="font-bold">+1 Tahun</span> dari sebelumnya. 
+            Dengan ini berhak atas: <br>
+            ✅ 1x peluk onlennn <br>
+            ✅ 3x kali izin tanpa diprotes <br>
+            ✅ sekuncup bunga mawar dikebun .. <br><br>
+            <span class="text-xs text-gray-600">* Garansi tidak berlaku jika subjek ngambek tanpa alasan yang jelas.</span>
+          </p>
+          
+          <div class="tear-line pt-4 mt-4 text-right">
+            <p class="font-mono text-xs">Dibuat di: Hati yang Saling peduli</p>
+            <p class="font-mono text-xs">Diterbitkan: Hari ini</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: Deteksi Ngambek -->
+<section id="ngambek" class="min-h-screen flex items-center justify-center px-6 py-20 hidden">
+  <div class="max-w-3xl w-full text-center">
+    <h2 class="text-4xl md:text-6xl font-black uppercase mb-4 slide-in">Tunggu...</h2>
+    <p class="font-mono text-[var(--muted)] mb-10 slide-in">Sebelum ngerasa hebat karena udah dapet garansi, ada tes terakhir.</p>
+    
+    <div class="card-brutal p-8 slide-in">
+      <div class="mb-6">
+        <div class="inline-block px-3 py-1 bg-[var(--primary)] text-white text-xs font-mono font-bold rounded-full mb-4">
+          TES KELAYAKAN MENTAL
+        </div>
+        <h3 class="text-2xl md:text-3xl font-black uppercase">Detector Ngambek</h3>
+        <p class="text-[var(--muted)] text-sm mt-2 font-mono">Goyangkan HP-mu sekuat tenaga untuk simulasi ngambek.</p>
+      </div>
+
+      <div class="h-40 bg-[var(--dark)] border-2 border-[var(--muted)] rounded-lg flex flex-col items-center justify-center relative mb-6">
+        <div id="moodEmoji" class="text-7xl mb-2 transition-transform">😊</div>
+        <p id="moodText" class="font-mono text-[var(--accent)] text-sm">SISTEM STANDBY...</p>
+        <div class="absolute bottom-2 right-2 font-mono text-xs text-[var(--muted)]">
+          SHAKE LEVEL: <span id="shakeLevel">0</span>
+        </div>
+      </div>
+
+      <button id="resetNgambek" class="btn-brutal btn-accent px-6 py-3 text-sm">
+        <i class="fas fa-redo mr-2"></i> RESET DETECTOR
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: Closing Lucu -->
+<section id="closing" class="min-h-screen flex items-center justify-center px-6 py-20 hidden">
+  <div class="max-w-2xl w-full text-center">
+    <div class="text-7xl md:text-9xl mb-8 float">
+      <i class="fas fa-hand-holding-heart text-[var(--primary)]"></i>
+    </div>
+    
+    <h2 class="text-3xl md:text-5xl font-black uppercase mb-6 leading-tight slide-in">
+      OKE, SERIUS-IN<br>DAH BENTAR.
+    </h2>
+    
+    <div class="card-brutal p-6 md:p-10 text-left slide-in">
+      <p class="font-mono text-sm md:text-base leading-relaxed mb-4 text-[var(--text)]">
+        Yah begitulah. Intanya: selamat ulang tahun. <br><br>
+        Mungkin tahun ini bukan tahun tercedihh buat kamu, bukan juga tahun paling bahagia, tapi tahun ini kamu ada di sini. Terus nyoba, terus ngelewatin hari-hari, terus jadi pribadi yang... ya, aku kenal sekarang.
+      </p>
+      <p class="font-mono text-sm md:text-base leading-relaxed mb-4 text-[var(--text)]">
+        Makasih ya masih mau nafas, masih mau mikir, masih mau ngelewatin hari berat sama hal-hal kecil. 
+      </p>
+      <p class="font-mono text-sm md:text-base leading-relaxed text-[var(--text)]">
+        Met ultah. Doa aku sederhana: semoga tahun depan galaunya berkurang, senyumnya nambah, dan... ya, semoga jarang laper. Aamiin.
+      </p>
+    </div>
+    
+    <div class="mt-10 slide-in">
+      <button id="confettiBtn" class="btn-brutal px-8 py-4 text-lg">
+        <i class="fas fa-birthday-cake mr-2"></i> ACUNGIN JARI!
+      </button>
+      <p class="mt-4 font-mono text-xs text-[var(--muted)]">* Klik tombol di atas untuk pecah belon.</p>
+    </div>
+    
+    <div class="mt-16 pt-8 border-t border-[var(--muted)]/30">
+      <p class="font-mono text-xs text-[var(--muted)] mb-4">
+        Dibuat dengan <i class="fas fa-coffee text-[var(--accent)]"></i> & sedikit rasa jijik karena terlalu drama.
+      </p>
+      <p class="font-mono text-sm text-[var(--text)] font-bold">
+        Credit by <span class="text-[var(--primary)]">Alennn</span> yang baik, lucu, dan rupawan ✨
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Floating Confetti Container -->
+<div id="confettiContainer" class="fixed inset-0 pointer-events-none z-40"></div>
+
+<script>
+// ============= SLIDE IN OBSERVER =============
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll('.slide-in').forEach(el => observer.observe(el));
+
+// ============= SYARAT & KETENTUAN RIBET =============
+const agreeBtn = document.getElementById('agreeBtn');
+let agreeClicks = 0;
+const agreeTexts = [
+  'AKU SETUJU & UDAH SENYUM',
+  'YAKIN UDAH SENYUM? MANA COBA BUKTIIN',
+  'TATAPAN MATA MASIH BELUM PRESISI. COBA LAGI.',
+  'OKE BUKTINYA VALID. LANJUT!'
+];
+
+agreeBtn.addEventListener('click', () => {
+  agreeClicks++;
+  if (agreeClicks < agreeTexts.length) {
+    agreeBtn.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${agreeTexts[agreeClicks]}`;
+    agreeBtn.classList.add('shake');
+    setTimeout(() => agreeBtn.classList.remove('shake'), 500);
+  } else {
+    document.getElementById('garansi').classList.remove('hidden');
+    document.getElementById('ngambek').classList.remove('hidden');
+    document.getElementById('closing').classList.remove('hidden');
+    
+    document.getElementById('garansi').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
+    // Trigger slide-in on newly shown elements
+    setTimeout(() => {
+      document.querySelectorAll('#garansi .slide-in, #ngambek .slide-in, #closing .slide-in').forEach(el => {
+        observer.observe(el);
+      });
+    }, 100);
+  }
+});
+
+function scrollToSection(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============= MESIN KLAIM GARANSI =============
+const submitGaransi = document.getElementById('submitGaransi');
+const namaInput = document.getElementById('namaInput');
+
+submitGaransi.addEventListener('click', () => {
+  const nama = namaInput.value.trim();
+  
+  if (!nama) {
+    namaInput.classList.add('shake');
+    namaInput.placeholder = "EH, NAMA KOSONG NIH!";
+    setTimeout(() => {
+      namaInput.classList.remove('shake');
+      namaInput.placeholder = "Ketik namamu di sini...";
+    }, 1000);
+    return;
+  }
+  
+  // Simulasi loading
+  submitGaransi.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> MEMPROSES...';
+  submitGaransi.disabled = true;
+  
+  setTimeout(() => {
+    document.getElementById('namaOutput').textContent = `${nama} bin/binti [Pilih Sendiri]`;
+    document.getElementById('hasilKlaim').classList.remove('hidden');
+    
+    // Reset Button
+    submitGaransi.innerHTML = '<i class="fas fa-check mr-2"></i> KLAIM BERHASIL!';
+    
+    // Lanjut ke section ngambek
+    setTimeout(() => {
+      document.getElementById('ngambek').scrollIntoView({ behavior: 'smooth' });
+    }, 2500);
+    
+  }, 1500);
+});
+
+// ============= DETECTOR NGAMBEK (VIBRATION API) =============
+const moodEmoji = document.getElementById('moodEmoji');
+const moodText = document.getElementById('moodText');
+const shakeLevelEl = document.getElementById('shakeLevel');
+let shakeLevel = 0;
+let shakeSensitivity = 15; // Threshold
+
+const moods = [
+  { emoji: '😊', text: 'SISTEM STANDBY...', level: 0 },
+  { emoji: '😌', text: 'PENUH PENGERTIAN', level: 10 },
+  { emoji: '😐', text: 'NETRAL KRITIS', level: 20 },
+  { emoji: '😒', text: 'MULAI SEPUK', level: 35 },
+  { emoji: '🙄', text: 'ALERT BOCOR', level: 50 },
+  { emoji: '😠', text: 'BATAL HAJI!', level: 70 },
+  { emoji: '🤬', text: 'NGAMBEK LEVEL: AKHIRAT!', level: 90 }
+];
+
+window.addEventListener('devicemotion', (e) => {
+  const x = e.accelerationIncludingGravity.x || 0;
+  const y = e.accelerationIncludingGravity.y || 0;
+  const z = e.accelerationIncludingGravity.z || 0;
+  
+  const acceleration = Math.sqrt(x*x + y*y + z*z);
+  
+  if (acceleration > 15) { // Jika diguncang keras
+    handleShake(acceleration);
+  }
+});
+
+let lastShakeTime = 0;
+function handleShake(force) {
+  const now = Date.now();
+  if (now - lastShakeTime < 100) return; // Throttle
+  lastShakeTime = now;
+  
+  shakeLevel = Math.min(100, shakeLevel + Math.floor(force / 2));
+  shakeLevelEl.textContent = shakeLevel;
+  
+  // Update mood
+  let currentMood = moods[0];
+  for (let i = moods.length - 1; i >= 0; i--) {
+    if (shakeLevel >= moods[i].level) {
+      currentMood = moods[i];
+      break;
+    }
+  }
+  
+  moodEmoji.textContent = currentMood.emoji;
+  moodText.textContent = currentMood.text;
+  
+  // Vibrate feedback
+  if (navigator.vibrate) {
+    navigator.vibrate(50);
+  }
+  
+  // Animasi getar emoji
+  moodEmoji.classList.add('wobble');
+  setTimeout(() => moodEmoji.classList.remove('wobble'), 400);
+  
+  // Kalau udah ngambek max, auto scroll
+  if (shakeLevel >= 90) {
+    setTimeout(() => {
+      moodText.textContent = 'YAUDAH DEH PALING BAEK BAHAGIA.';
+      moodText.classList.add('text-[var(--primary)]');
+      setTimeout(() => {
+        document.getElementById('closing').scrollIntoView({ behavior: 'smooth' });
+      }, 2000);
+    }, 500);
+  }
+}
+
+// Fallback: Click to shake for desktop testing
+const shakeBox = document.querySelector('#ngambek .h-40');
+shakeBox.addEventListener('click', () => handleShake(30));
+
+document.getElementById('resetNgambek').addEventListener('click', () => {
+  shakeLevel = 0;
+  shakeLevelEl.textContent = 0;
+  moodEmoji.textContent = '😊';
+  moodText.textContent = 'SISTEM STANDBY...';
+  moodText.classList.remove('text-[var(--primary)]');
+});
+
+// ============= CONFETTI =============
+const colors = ['#e94560', '#f5c518', '#16213e', '#f2f2f2'];
+
+document.getElementById('confettiBtn').addEventListener('click', launchConfetti);
+
+function launchConfetti() {
+  const container = document.getElementById('confettiContainer');
+  
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const conf = document.createElement('div');
+      const size = Math.random() * 10 + 5;
+      const isCircle = Math.random() > 0.5;
+      
+      conf.style.position = 'absolute';
+      conf.style.width = size + 'px';
+      conf.style.height = (isCircle ? size : size * 0.6) + 'px';
+      conf.style.background = colors[Math.floor(Math.random() * colors.length)];
+      conf.style.borderRadius = isCircle ? '50%' : '0';
+      
+      // Start pos
+      const startX = Math.random() * window.innerWidth;
+      conf.style.left = startX + 'px';
+      conf.style.top = '-20px';
+      conf.style.transform = `rotate(${Math.random() * 360}deg)`;
+      conf.style.transition = `transform 1.5s ease-out, top 1.5s ease-in, opacity 1.5s ease-in`;
+      
+      container.appendChild(conf);
+      
+      requestAnimationFrame(() => {
+        conf.style.top = (window.innerHeight + 50) + 'px';
+        conf.style.transform = `rotate(${Math.random() * 720 + 360}deg) translateX(${(Math.random() - 0.5) * 200}px)`;
+      });
+      
+      setTimeout(() => {
+        conf.remove();
+      }, 1500);
+    }, i * 20);
+  }
+}
+</script>
+</body>
+</html>
